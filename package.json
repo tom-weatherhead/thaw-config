@@ -1,0 +1,21 @@
+{
+	"name": "thaw-config",
+	"description": "ThAW's Node.js project configuration data",
+	"version": "0.0.0",
+	"main": "src/main",
+	"scripts": {
+		"start": "grunt",
+		"test": "grunt"
+	},
+	"dependencies": {},
+	"devDependencies": {
+		"grunt": "^1.0.4",
+		"grunt-eslint": "^21.1.0"
+	},
+	"keywords": [
+		"configuration",
+		"data"
+	],
+	"author": "Tom Weatherhead <null@2hrd4u.org> (https://httpbin.org/status/418)",
+	"license": "MIT"
+}

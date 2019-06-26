@@ -1,0 +1,11 @@
+{
+	"browsers": [
+		{
+		"chrome": "last 2 versions",
+		"firefox": "last 2 versions",
+		"ios_saf": "10"
+		}
+	],
+	"ios": "10",
+	"node": "current"
+}
