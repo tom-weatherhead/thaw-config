@@ -1,9 +1,18 @@
 {
 	"name": "thaw-config",
 	"description": "ThAW's Node.js project configuration data",
-	"version": "0.0.0",
+	"version": "0.0.1",
 	"main": "src/main",
 	"scripts": {
+		"build": "npm i && grunt",
+		"buildw": "npm i & grunt",
+		"buildx": "npm i && grunt && npm start",
+		"buildwx": "npm i & grunt & npm start",
+		"clean": "rm -rf node_modules && rm -f package-lock.json",
+		"cleanw": "rmdir /Q /S node_modules & del package-lock.json",
+		"rebuild": "npm run clean & npm run build",
+		"rebuildw": "npm run cleanw & npm run buildw",
+		"lint": "grunt eslint",
 		"start": "grunt",
 		"test": "grunt"
 	},

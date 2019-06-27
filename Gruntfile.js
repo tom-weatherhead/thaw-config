@@ -1,4 +1,4 @@
-// golden-goose/web-service/Gruntfile.js
+// thaw-config/Gruntfile.js
 
 'use strict';
 
