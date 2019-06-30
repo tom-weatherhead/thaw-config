@@ -2,6 +2,14 @@
 	"name": "thaw-config",
 	"description": "ThAW's Node.js project configuration data",
 	"version": "0.0.1",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/tom-weatherhead/thaw-config.js.git"
+	},
+	"homepage": "https://github.com/tom-weatherhead/thaw-config.js#readme",
+	"bugs": {
+		"url": "https://github.com/tom-weatherhead/thaw-config.js/issues"
+	},
 	"main": "src/main",
 	"scripts": {
 		"build": "npm i && grunt",
@@ -20,6 +28,10 @@
 	"devDependencies": {
 		"grunt": "^1.0.4",
 		"grunt-eslint": "^21.1.0"
+	},
+	"engineStrict": true,
+	"engines": {
+		"node": ">= 8"
 	},
 	"keywords": [
 		"configuration",

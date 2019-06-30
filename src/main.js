@@ -2,76 +2,67 @@
 
 'use strict';
 
-const clientTargets = require('../config/babel-targets-client-side');
-const serverTargets = require('../config/babel-targets-server-side');
+const babelTargetOptionsForClientProfile = require('../config/babel-targets-client-side');
+const babelTargetOptionsForServerProfile = require('../config/babel-targets-server-side');
+
+function getBabelTargetOptionsFromProfileName (profileName) {
+
+	switch (profileName) {
+		case 'client':
+			return babelTargetOptionsForClientProfile;
+
+		case 'server':
+			return babelTargetOptionsForServerProfile;
+
+		default:
+			return null;
+	}
+}
 
 // module.exports = (options = {}) => {
 module.exports = {
 	babel: {
-		client: clientTargets,
-		server: serverTargets,
-		getOptions: (options = {}) => {
+		client: babelTargetOptionsForClientProfile,
+		server: babelTargetOptionsForServerProfile,
+		getOptions: (babelOptionsIn = {}) => {
 			// { targetName: foo (or targetOptions: fooOptions), transformClasses: [true | false | undefined] }
-			let targetOptions;
-			let pluginsArray = [];
+			let pluginsArray = [
+				// ['@babel/plugin-transform-runtime'],
+				// ['@babel/plugin-syntax-dynamic-import']
+			];
 
-			switch (options.targetName) {
-				case 'client':
-					targetOptions = clientTargets;
-					break;
-
-				case 'server':
-					targetOptions = serverTargets;
-					break;
-
-				default:
-					break;
-			}
-
-			if (options.transformClasses === true || options.transformClasses === false) {
+			if (babelOptionsIn.transformClasses === true || babelOptionsIn.transformClasses === false) {
 				pluginsArray.push(
+					// From https://babeljs.io/docs/en/babel-plugin-transform-classes :
 					[
 						'@babel/plugin-transform-classes',
 						{
-							loose: options.transformClasses
+							loose: babelOptionsIn.transformClasses
 						}
 					]
 				);
 			}
+
+			// "@babel/core": "^7.4.3",
+			// "@babel/plugin-syntax-dynamic-import": "^7.2.0",
+			// "@babel/plugin-transform-classes": "^7.4.3",
+			// "@babel/plugin-transform-runtime": "^7.4.4",
+			// "@babel/preset-env": "^7.4.3",
+			// "@babel/runtime": "^7.4.4",
+			// "babel-loader": "^8.0.5",
 
 			return {
 				presets: [
 					[
 						'@babel/preset-env',
 						{
-							targets: targetOptions
+							targets: babelOptionsIn.targetOptions || getBabelTargetOptionsFromProfileName(babelOptionsIn.targetProfileName) || {}
 						}
 					]
 				],
-				// "@babel/core": "^7.4.3",
-				// "@babel/plugin-syntax-dynamic-import": "^7.2.0",
-				// "@babel/plugin-transform-classes": "^7.4.3",
-				// "@babel/plugin-transform-runtime": "^7.4.4",
-				// "@babel/preset-env": "^7.4.3",
-				// "@babel/runtime": "^7.4.4",
-				// "babel-loader": "^8.0.5",
-
-				/*
-				// plugins: [
-				// 	'transform-class-properties'
-				// ]
-				// From https://babeljs.io/docs/en/babel-plugin-transform-classes :
-				plugins: [
-					['@babel/plugin-transform-classes', {
-						'loose': true
-						// 'loose': false
-					}] //,
-				// 	['@babel/plugin-transform-runtime'],
-				// 	['@babel/plugin-syntax-dynamic-import']
-				 */
-				plugins: pluginsArray,
-				comments: false,
-				sourceType: 'unambiguous'
+				plugins: pluginsArray //,
+				// comments: false,
+				// sourceType: 'unambiguous'
 			};
 		}
 	},
