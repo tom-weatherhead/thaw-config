@@ -4,11 +4,11 @@
 	"version": "0.0.1",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/tom-weatherhead/thaw-config.js.git"
+		"url": "https://github.com/tom-weatherhead/thaw-config.git"
 	},
-	"homepage": "https://github.com/tom-weatherhead/thaw-config.js#readme",
+	"homepage": "https://github.com/tom-weatherhead/thaw-config#readme",
 	"bugs": {
-		"url": "https://github.com/tom-weatherhead/thaw-config.js/issues"
+		"url": "https://github.com/tom-weatherhead/thaw-config/issues"
 	},
 	"main": "src/main",
 	"scripts": {
