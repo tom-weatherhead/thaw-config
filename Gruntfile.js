@@ -2,6 +2,9 @@
 
 'use strict';
 
+module.exports = require('.').grunt.eslint;
+
+/*
 module.exports = grunt => {
 	const packageJsonFilename = 'package.json';
 	const gruntfile = grunt.file.readJSON(packageJsonFilename);
@@ -24,3 +27,4 @@ module.exports = grunt => {
 
 	grunt.registerTask('default', ['test']);
 };
+ */
