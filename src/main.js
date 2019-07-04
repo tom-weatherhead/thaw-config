@@ -134,15 +134,15 @@ module.exports = {
 			const isConcatNeeded = forClient && forServer;
 			// const isConcatNeeded = true;
 
-			console.log('eslint_webpack_concat_nodeunit: options are', options);
-			console.log('eslint_webpack_concat_nodeunit: dirname is', dirname);
-			console.log('eslint_webpack_concat_nodeunit: nodeunit is', nodeunit);
+			// console.log('eslint_webpack_concat_nodeunit: options are', options);
+			// console.log('eslint_webpack_concat_nodeunit: dirname is', dirname);
+			// console.log('eslint_webpack_concat_nodeunit: nodeunit is', nodeunit);
 
 			const packageJsonFilename = 'package.json';
 			const gruntfile = grunt.file.readJSON(packageJsonFilename);
 			// const getWebpackConfig = (mode, libraryTarget) => {
 			const getWebpackConfig = (mode, targetProfileName) => {
-				console.log(`eslint_webpack_concat_nodeunit: getWebpackConfig(${mode}, ${targetProfileName})`);
+				// console.log(`eslint_webpack_concat_nodeunit: getWebpackConfig(${mode}, ${targetProfileName})`);
 
 				const libraryTarget = targetProfileName === 'client' ? 'global' : targetProfileName === 'server' ? 'commonjs2' : '';
 				// const babelTargets = libraryTarget === 'commonjs2' ? babelTargetOptionsForServerProfile : babelTargetOptionsForClientProfile;
@@ -150,7 +150,7 @@ module.exports = {
 				// const filename = `${ gruntfile.shortName }-webpack-${mode}-${libraryTarget}${filenameSuffix}.js`;
 				const filename = `${ gruntfile.shortName }-${libraryTarget}.js`;
 
-				console.log('eslint_webpack_concat_nodeunit: filename is', filename);
+				// console.log('eslint_webpack_concat_nodeunit: filename is', filename);
 
 				babelOptions.targetProfileName = targetProfileName;
 

@@ -1,6 +1,5 @@
 {
 	"globals": {
-		"console": true,
 		"module": true,
 		"require": true
 	},
