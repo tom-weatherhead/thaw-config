@@ -57,5 +57,12 @@ typings/
 # dotenv environment variables file
 .env
 
+.editorconfig
+.eslintrc
+.travis.yml
+Gruntfile.js
+
 # For macOS:
 .DS_Store
+._.DS_Store
+.Trashes

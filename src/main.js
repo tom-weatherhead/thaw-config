@@ -5,6 +5,10 @@
 const babelTargetOptionsForClientProfile = require('../config/babel-targets-client-side');
 const babelTargetOptionsForServerProfile = require('../config/babel-targets-server-side');
 
+function ifDefinedElse (value, defaultValue) {
+	return typeof value !== 'undefined' ? value : defaultValue;
+}
+
 function getBabelTargetOptionsFromProfileName (profileName) {
 
 	switch (profileName) {
@@ -21,7 +25,8 @@ function getBabelTargetOptionsFromProfileName (profileName) {
 
 function getBabelOptions (babelOptionsIn = {}) {
 	// { targetName: foo (or targetOptions: fooOptions), transformClasses: [true | false | undefined] }
-	let pluginsArray = [
+
+	const pluginsArray = [
 		// ['@babel/plugin-transform-runtime'],
 		// ['@babel/plugin-syntax-dynamic-import']
 	];
@@ -38,14 +43,6 @@ function getBabelOptions (babelOptionsIn = {}) {
 		);
 	}
 
-	// "@babel/core": "^7.4.3",
-	// "@babel/plugin-syntax-dynamic-import": "^7.2.0",
-	// "@babel/plugin-transform-classes": "^7.4.3",
-	// "@babel/plugin-transform-runtime": "^7.4.4",
-	// "@babel/preset-env": "^7.4.3",
-	// "@babel/runtime": "^7.4.4",
-	// "babel-loader": "^8.0.5",
-
 	return {
 		presets: [
 			[
@@ -61,7 +58,6 @@ function getBabelOptions (babelOptionsIn = {}) {
 	};
 }
 
-// module.exports = (options = {}) => {
 module.exports = {
 	babel: {
 		client: babelTargetOptionsForClientProfile,
@@ -89,7 +85,6 @@ module.exports = {
 
 			// Aliases
 			grunt.registerTask('test', ['eslint']);
-
 			grunt.registerTask('default', ['test']);
 		},
 		eslint_nodeunit: grunt => {
@@ -117,22 +112,19 @@ module.exports = {
 			grunt.registerTask('test', ['eslint', 'nodeunit']);
 			grunt.registerTask('default', ['test']);
 		},
-		// eslint_webpack_concat_nodeunit: dirname => grunt => {
 		eslint_webpack_concat_nodeunit: (options = {}) => grunt => {
-		// eslint_webpack_concat_nodeunit: grunt => {
-			// let options = {};
-			const path = require('path');
-
 			const dirname = options.dirname || '';
-			const forClient = options.forClient;
-			const forServer = options.forServer;
 			const babelOptions = options.babelOptions || {};
-			const nodeunit = typeof options.nodeunit !== 'undefined' ? options.nodeunit : true;
 
-			// const forClient = true;
-			// const forServer = true;
-			const isConcatNeeded = forClient && forServer;
-			// const isConcatNeeded = true;
+			// const nodeunit = typeof options.nodeunit !== 'undefined' ? options.nodeunit : true;
+			const eslint = ifDefinedElse(options.eslint, true);
+			const nodeunit = ifDefinedElse(options.nodeunit, false);
+			const webpack = ifDefinedElse(options.webpack, false);
+
+			const forClient = webpack && options.forClient;
+			const forServer = webpack && options.forServer;
+			const concat = webpack && forClient && forServer;
+			// const concat = webpack && sum([forClient, forServer].map(bool => bool ? 1 : 0)) > 1;
 
 			// console.log('eslint_webpack_concat_nodeunit: options are', options);
 			// console.log('eslint_webpack_concat_nodeunit: dirname is', dirname);
@@ -140,63 +132,7 @@ module.exports = {
 
 			const packageJsonFilename = 'package.json';
 			const gruntfile = grunt.file.readJSON(packageJsonFilename);
-			// const getWebpackConfig = (mode, libraryTarget) => {
-			const getWebpackConfig = (mode, targetProfileName) => {
-				// console.log(`eslint_webpack_concat_nodeunit: getWebpackConfig(${mode}, ${targetProfileName})`);
-
-				const libraryTarget = targetProfileName === 'client' ? 'global' : targetProfileName === 'server' ? 'commonjs2' : '';
-				// const babelTargets = libraryTarget === 'commonjs2' ? babelTargetOptionsForServerProfile : babelTargetOptionsForClientProfile;
-
-				// const filename = `${ gruntfile.shortName }-webpack-${mode}-${libraryTarget}${filenameSuffix}.js`;
-				const filename = `${ gruntfile.shortName }-${libraryTarget}.js`;
-
-				// console.log('eslint_webpack_concat_nodeunit: filename is', filename);
-
-				babelOptions.targetProfileName = targetProfileName;
-
-				return {
-					mode: mode,
-					entry: './src/main.js',
-					// target: libraryTarget === 'commonjs2' ? 'node' : undefined, // See https://stackoverflow.com/questions/43915463/webpack-node-js-http-module-http-createserver-is-not-a-function
-					target: targetProfileName === 'server' ? 'node' : undefined, // See https://stackoverflow.com/questions/43915463/webpack-node-js-http-module-http-createserver-is-not-a-function
-					output: {
-						path: path.join(dirname, 'dist'), // TODO: Ensure that __dirname has the correct value.
-						filename: filename,
-						library: gruntfile.shortName,
-						// See https://webpack.js.org/configuration/output/#output-librarytarget
-						libraryTarget: libraryTarget
-					},
-					// plugins: [
-					// 	new HtmlWebpackPlugin({
-					// 		template: 'src/index.html'
-					// 	})
-					// ],
-					module: {
-						rules: [
-							{
-								test: /\.js[x]?$/,
-								exclude: /node_modules/,
-								use: [
-									{
-										loader: 'babel-loader',
-										// options: getBabelOptions({
-										// 	targetProfileName: targetProfileName
-										// })
-										options: getBabelOptions(babelOptions)
-									}
-								]
-							}
-							// ,
-							// {
-							// 	test: /.css$/,
-							// 	loader: "style-loader!css-loader"
-							// }
-						]
-					} //,
-					// devtool: 'source-map'
-				};
-			};
-
+			/*
 			const initGruntConfigOptions = {
 				pkg: gruntfile,
 				eslint: {
@@ -216,8 +152,13 @@ module.exports = {
 					prodclient: getWebpackConfig('production', 'client')
 				}
 			};
+			 */
 
-			if (isConcatNeeded) {
+			const initGruntConfigOptions = {
+				pkg: gruntfile
+			};
+
+			if (concat) {
 				initGruntConfigOptions.concat = {
 					options: {
 						banner: '/**\n' +
@@ -242,31 +183,97 @@ module.exports = {
 				};
 			}
 
+			if (eslint) {
+				initGruntConfigOptions.eslint = {
+					target: [
+						'*.js',
+						'src/*.js',
+						'test/*.js'
+					]
+				};
+			}
+
+			if (nodeunit) {
+				initGruntConfigOptions.nodeunit = {
+					all: ['test/*_test.js']
+				};
+			}
+
+			if (webpack) {
+				const getWebpackConfig = (mode, targetProfileName) => {
+					const path = require('path');
+
+					// console.log(`eslint_webpack_concat_nodeunit: getWebpackConfig(${mode}, ${targetProfileName})`);
+
+					const libraryTarget = targetProfileName === 'client' ? 'global' : targetProfileName === 'server' ? 'commonjs2' : '';
+					const filename = `${ gruntfile.shortName }-${libraryTarget}.js`;
+
+					// console.log('eslint_webpack_concat_nodeunit: filename is', filename);
+
+					babelOptions.targetProfileName = targetProfileName;
+
+					return {
+						mode: mode,
+						entry: './src/main.js',
+						target: targetProfileName === 'server' ? 'node' : undefined, // See https://stackoverflow.com/questions/43915463/webpack-node-js-http-module-http-createserver-is-not-a-function
+						output: {
+							path: path.join(dirname, 'dist'),
+							filename: filename,
+							library: gruntfile.shortName,
+							// See https://webpack.js.org/configuration/output/#output-librarytarget
+							libraryTarget: libraryTarget
+						},
+						module: {
+							rules: [
+								{
+									test: /\.js[x]?$/,
+									exclude: /node_modules/,
+									use: [
+										{
+											loader: 'babel-loader',
+											options: getBabelOptions(babelOptions)
+										}
+									]
+								}
+							]
+						} //,
+						// devtool: 'source-map'
+					};
+				};
+
+				initGruntConfigOptions.webpack = {
+					// Possible values for libraryTarget: See https://webpack.js.org/configuration/output/#output-librarytarget :
+					// amd, amd-require, assign, commonjs, commonjs2, global, jsonp, this, umd, var, window.
+					prodserver: getWebpackConfig('production', 'server'),
+					prodclient: getWebpackConfig('production', 'client')
+				};
+			}
+
+			// Initialize Grunt.
 			grunt.initConfig(initGruntConfigOptions);
 
-			// Tasks
+			// Load Grunt Tasks.
 
-			if (isConcatNeeded) {
+			if (concat) {
 				grunt.loadNpmTasks('grunt-contrib-concat');
+			}
+
+			if (eslint) {
+				grunt.loadNpmTasks('grunt-eslint');
 			}
 
 			if (nodeunit) {
 				grunt.loadNpmTasks('grunt-contrib-nodeunit');
 			}
 
-			grunt.loadNpmTasks('grunt-eslint');
-			grunt.loadNpmTasks('grunt-webpack');
+			if (webpack) {
+				grunt.loadNpmTasks('grunt-webpack');
+			}
 
 			/*
-			const buildTasks = [
-				'webpack:prodserver',
-				'webpack:prodclient',
-				'concat'
-			];
-			 */
 			let buildTasks;
 
-			if (isConcatNeeded) {
+			if (concat) {
 				buildTasks = [
 					'webpack:prodserver',
 					'webpack:prodclient',
@@ -279,12 +286,29 @@ module.exports = {
 			} else {
 				buildTasks = [];
 			}
+			 */
 
-			// Aliases
+			const buildTasks = [];
+
+			if (forClient) {
+				buildTasks.push('webpack:prodclient');
+			}
+
+			if (forServer) {
+				buildTasks.push('webpack:prodserver');
+			}
+
+			if (buildTasks.length >= 2) {
+				buildTasks.push('concat');
+			}
+
+			// Aliases : Register Grunt Tasks.
 			grunt.registerTask('build', buildTasks);
 
-			let testTasks = ['eslint'];
-			let defaultTasks = ['eslint', 'build'];
+			/*
+			const testTasks = ['eslint']; // preBuildTestTasks
+			// const postBuildTestTasks = [];
+			const defaultTasks = ['eslint', 'build'];
 
 			if (nodeunit) {
 				const strNodeunit = 'nodeunit';
@@ -295,6 +319,23 @@ module.exports = {
 
 			grunt.registerTask('test', testTasks);
 			grunt.registerTask('default', defaultTasks);
+			 */
+
+			const preBuildTestTasks = [];
+			const postBuildTestTasks = [];
+
+			if (eslint) {
+				preBuildTestTasks.push('eslint');
+			}
+
+			if (nodeunit) {
+				postBuildTestTasks.push('nodeunit');
+			}
+
+			grunt.registerTask('preBuildTest', preBuildTestTasks);
+			grunt.registerTask('postBuildTest', postBuildTestTasks);
+			grunt.registerTask('test', ['preBuildTest', 'postBuildTest']);
+			grunt.registerTask('default', ['preBuildTest', 'build', 'postBuildTest']);
 		}
 	},
 	version: require('../package.json').version
