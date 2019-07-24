@@ -69,7 +69,7 @@ module.exports = {
 		const babelOptions = options.babelOptions || {};
 
 		const eslint = ifDefinedElse(options.eslint, true);
-		const nodeunit = ifDefinedElse(options.nodeunit, false);
+		const mocha = ifDefinedElse(options.mocha, false);
 		const webpack = ifDefinedElse(options.webpack, false);
 
 		const forClient = webpack && options.forClient;
@@ -118,9 +118,14 @@ module.exports = {
 			};
 		}
 
-		if (nodeunit) {
-			initGruntConfigOptions.nodeunit = {
-				all: ['test/*_test.js']
+		if (mocha) {
+			initGruntConfigOptions.mochaTest = {
+				options: {
+					reporter: 'spec'
+				},
+				test: {
+					src: ['test/*_spec.js']
+				}
 			};
 		}
 
@@ -182,8 +187,8 @@ module.exports = {
 			grunt.loadNpmTasks('grunt-eslint');
 		}
 
-		if (nodeunit) {
-			grunt.loadNpmTasks('grunt-contrib-nodeunit');
+		if (mocha) {
+			grunt.loadNpmTasks('grunt-mocha-test');
 		}
 
 		if (webpack) {
@@ -215,8 +220,8 @@ module.exports = {
 			preBuildTestTasks.push('eslint');
 		}
 
-		if (nodeunit) {
-			postBuildTestTasks.push('nodeunit');
+		if (mocha) {
+			postBuildTestTasks.push('mochaTest');
 		}
 
 		grunt.registerTask('preBuildTest', preBuildTestTasks);
