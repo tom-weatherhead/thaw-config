@@ -1,7 +1,7 @@
 {
 	"name": "thaw-config",
 	"description": "ThAW's Node.js project configuration data",
-	"version": "0.0.2",
+	"version": "0.0.3",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/tom-weatherhead/thaw-config.git"
