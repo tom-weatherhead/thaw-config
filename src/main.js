@@ -71,6 +71,7 @@ module.exports = {
 		const eslint = ifDefinedElse(options.eslint, true);
 		const mocha = ifDefinedElse(options.mocha, false);
 		const webpack = ifDefinedElse(options.webpack, false);
+		// const webpackMinimize = ifDefinedElse(options.webpackMinimize, true);
 
 		const forClient = webpack && options.forClient;
 		const forServer = webpack && options.forServer;
@@ -130,6 +131,8 @@ module.exports = {
 		}
 
 		if (webpack) {
+			const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+
 			const getWebpackConfig = (mode, targetProfileName) => {
 				const path = require('path');
 				const libraryTarget = targetProfileName === 'client' ? 'global' : targetProfileName === 'server' ? 'commonjs2' : '';
@@ -160,6 +163,12 @@ module.exports = {
 									}
 								]
 							}
+						]
+					},
+					optimization: {
+						// minimize: webpackMinimize
+						minimizer: [
+							new UglifyJsPlugin()
 						]
 					} //,
 					// devtool: 'source-map'
