@@ -71,7 +71,6 @@ module.exports = {
 		const eslint = ifDefinedElse(options.eslint, true);
 		const mocha = ifDefinedElse(options.mocha, false);
 		const webpack = ifDefinedElse(options.webpack, false);
-		// const webpackMinimize = ifDefinedElse(options.webpackMinimize, true);
 
 		const forClient = webpack && options.forClient;
 		const forServer = webpack && options.forServer;
@@ -166,7 +165,6 @@ module.exports = {
 						]
 					},
 					optimization: {
-						// minimize: webpackMinimize
 						minimizer: [
 							new UglifyJsPlugin()
 						]
