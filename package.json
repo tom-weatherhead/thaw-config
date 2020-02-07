@@ -1,24 +1,22 @@
 {
 	"name": "thaw-config",
 	"description": "ThAW's Node.js project configuration data",
-	"version": "0.0.4",
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/tom-weatherhead/thaw-config.git"
-	},
+	"version": "0.0.5",
+	"repository": "github:tom-weatherhead/thaw-config",
 	"homepage": "https://github.com/tom-weatherhead/thaw-config#readme",
 	"bugs": {
 		"url": "https://github.com/tom-weatherhead/thaw-config/issues"
 	},
 	"main": "src/main",
 	"scripts": {
+		"all": "npm run rebuild",
 		"build": "npm i && grunt",
 		"buildw": "npm i & grunt",
 		"buildx": "npm i && grunt && npm start",
 		"buildwx": "npm i & grunt & npm start",
 		"clean": "rm -rf node_modules && rm -f package-lock.json",
 		"cleanw": "rmdir /Q /S node_modules & del package-lock.json",
-		"rebuild": "npm run clean & npm run build",
+		"rebuild": "npm run clean && npm run build",
 		"rebuildw": "npm run cleanw & npm run buildw",
 		"lint": "grunt eslint",
 		"start": "grunt",
@@ -29,7 +27,6 @@
 		"grunt": "^1.0.4",
 		"grunt-eslint": "^22.0.0"
 	},
-	"engineStrict": true,
 	"engines": {
 		"node": ">= 8"
 	},
@@ -37,6 +34,6 @@
 		"configuration",
 		"data"
 	],
-	"author": "Tom Weatherhead <null@2hrd4u.org> (https://httpbin.org/status/418)",
+	"author": "Tom Weatherhead <null@2hrd4u.org> (https://github.com/tom-weatherhead)",
 	"license": "MIT"
 }
